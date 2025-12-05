@@ -99,6 +99,7 @@ export interface User {
   email: string;
   username: string;
   created_at: string;
+  is_verified?: boolean;
 }
 
 export interface AuthResponse {
