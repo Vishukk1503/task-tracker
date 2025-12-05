@@ -10,6 +10,8 @@ from app.models.models import TaskStatus, TaskPriority, User
 from app.core.security import verify_password, create_access_token
 from datetime import timedelta
 from app.core.config import settings
+from app.core.email import EmailService
+import secrets
 import math
 
 
@@ -115,8 +117,22 @@ class AuthService:
                 detail="Email already registered"
             )
         
-        # Create user
+        # Create user with verification token
         db_user = UserRepository.create(db, user)
+        
+        # Generate verification token
+        verification_token = secrets.token_urlsafe(32)
+        db_user.verification_token = verification_token
+        db.commit()
+        
+        # Send verification email
+        EmailService.initialize()
+        verification_link = f"{settings.FRONTEND_URL}/verify-email?token={verification_token}"
+        EmailService.send_verification_email(
+            to_email=db_user.email,
+            username=db_user.username,
+            verification_link=verification_link
+        )
         
         # Create access token
         access_token = create_access_token(
@@ -130,7 +146,8 @@ class AuthService:
             "user": {
                 "id": db_user.id,
                 "username": db_user.username,
-                "email": db_user.email
+                "email": db_user.email,
+                "is_verified": bool(db_user.is_verified)
             }
         }
     
@@ -159,7 +176,8 @@ class AuthService:
             "user": {
                 "id": user.id,
                 "username": user.username,
-                "email": user.email
+                "email": user.email,
+                "is_verified": bool(user.is_verified)
             }
         }
     

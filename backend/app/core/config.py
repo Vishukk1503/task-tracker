@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     # Environment
     ENVIRONMENT: str = "development"  # development, production, staging
     
+    # Email (Resend)
+    RESEND_API_KEY: str = ""  # Set in environment variables
+    EMAIL_FROM: str = "Task Tracker <onboarding@resend.dev>"  # Update with your verified domain
+    
     @property
     def is_production(self) -> bool:
         return self.ENVIRONMENT.lower() == "production"

@@ -104,3 +104,14 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     """Schema for decoded token data"""
     user_id: Optional[int] = None
+
+
+class PasswordChange(BaseModel):
+    """Schema for changing password"""
+    current_password: str
+    new_password: str = Field(..., min_length=6)
+
+
+class EmailUpdate(BaseModel):
+    """Schema for updating email"""
+    email: EmailStr

@@ -30,6 +30,8 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     username = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
+    is_verified = Column(Integer, default=0, nullable=False)  # 0 = not verified, 1 = verified
+    verification_token = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     
     # Relationships
@@ -55,3 +57,18 @@ class Task(Base):
     
     # Relationships
     owner = relationship("User", back_populates="tasks")
+    notifications = relationship("Notification", back_populates="task", cascade="all, delete-orphan")
+
+
+class Notification(Base):
+    """Notification tracking model"""
+    __tablename__ = "notifications"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    task_id = Column(Integer, ForeignKey("tasks.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    notification_type = Column(String, nullable=False)  # 'due_1_day', 'due_today'
+    sent_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    
+    # Relationships
+    task = relationship("Task", back_populates="notifications")
