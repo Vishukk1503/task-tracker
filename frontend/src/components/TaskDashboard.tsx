@@ -274,7 +274,16 @@ export function TaskDashboard() {
               <div className="text-yellow-600 dark:text-yellow-400">⚠️</div>
               <div>
                 <p className="font-medium text-yellow-900 dark:text-yellow-200">Please verify your email</p>
-                <p className="text-sm text-yellow-700 dark:text-yellow-300">Check your inbox for the verification link. Some features may be limited until verified.</p>
+                <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                  Check your inbox for the verification link or{' '}
+                  <button
+                    onClick={() => router.push('/profile')}
+                    className="underline hover:text-yellow-900 dark:hover:text-yellow-100 font-medium"
+                  >
+                    resend verification email
+                  </button>
+                  {' '}from your profile.
+                </p>
               </div>
             </div>
           </div>

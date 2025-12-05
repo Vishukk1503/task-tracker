@@ -136,6 +136,41 @@ def verify_email(
     return {"message": "Email verified successfully"}
 
 
+@router.post("/resend-verification")
+def resend_verification(
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user_id)
+):
+    """
+    Resend verification email
+    """
+    from app.models.models import User
+    from app.core.config import settings
+    
+    user = UserRepository.get_by_id(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user.is_verified:
+        raise HTTPException(status_code=400, detail="Email already verified")
+    
+    # Generate new token
+    verification_token = secrets.token_urlsafe(32)
+    user.verification_token = verification_token
+    db.commit()
+    
+    # Send verification email
+    EmailService.initialize()
+    verification_link = f"{settings.FRONTEND_URL}/verify-email?token={verification_token}"
+    EmailService.send_verification_email(
+        to_email=user.email,
+        username=user.username,
+        verification_link=verification_link
+    )
+    
+    return {"message": "Verification email sent successfully"}
+
+
 @router.put("/update-email")
 def update_email(
     email_data: EmailUpdate,

@@ -25,6 +25,7 @@ export default function ProfilePage() {
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [newEmail, setNewEmail] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -77,6 +78,7 @@ export default function ProfilePage() {
       toast.success('Email updated! Please verify your new email.');
       setIsEditingEmail(false);
       setNewEmail('');
+      startResendTimer();
       // Refresh user data
       window.location.reload();
     } catch (error: any) {
@@ -84,6 +86,34 @@ export default function ProfilePage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleResendVerification = async () => {
+    if (resendTimer > 0) return;
+
+    setIsLoading(true);
+    try {
+      await api.post('/auth/resend-verification');
+      toast.success('Verification email sent! Check your inbox.');
+      startResendTimer();
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || 'Failed to send verification email');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const startResendTimer = () => {
+    setResendTimer(30);
+    const interval = setInterval(() => {
+      setResendTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
   };
 
   const handleDeleteAccount = async () => {
@@ -202,7 +232,20 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 ) : (
-                  <p className="font-medium">{user.email}</p>
+                  <div>
+                    <p className="font-medium">{user.email}</p>
+                    {!user.is_verified && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={handleResendVerification}
+                        disabled={isLoading || resendTimer > 0}
+                        className="text-xs text-blue-600 dark:text-blue-400 mt-2"
+                      >
+                        {resendTimer > 0 ? `Resend in ${resendTimer}s` : 'Resend Verification Email'}
+                      </Button>
+                    )}
+                  </div>
                 )}
               </div>
 
