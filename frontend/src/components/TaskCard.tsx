@@ -117,7 +117,7 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
                     ? 'text-orange-600 dark:text-orange-400 font-medium'
                     : ''
                 }>
-                  Due: {format(new Date(task.due_date), 'MMM d, yyyy')}
+                  Due: {format(new Date(task.due_date), 'MMM d, yyyy h:mm a')}
                 </span>
               </div>
             )}

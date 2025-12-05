@@ -116,3 +116,46 @@ class EmailService:
         except Exception as e:
             print(f"❌ Failed to send email to {to_email}: {str(e)}")
             return False
+    
+    @staticmethod
+    def send_hourly_reminder(
+        to_email: str,
+        username: str,
+        task_title: str,
+        due_datetime: str,
+        minutes_until_due: int
+    ) -> bool:
+        """
+        Send 1-hour reminder email
+        Returns True if sent successfully
+        """
+        if not settings.RESEND_API_KEY:
+            print(f"⚠️  Email not sent (no API key): {task_title} hourly reminder to {to_email}")
+            return False
+        
+        try:
+            subject = f"⏰ Task Due Soon: {task_title}"
+            message = f"""
+            <h2>Hi {username},</h2>
+            <p>⚡ <strong>Urgent:</strong> Your task is due in approximately <strong>{minutes_until_due} minutes</strong>!</p>
+            <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3 style="margin: 0 0 10px 0; color: #dc2626;">{task_title}</h3>
+                <p style="margin: 0; color: #991b1b;"><strong>Due at: {due_datetime}</strong></p>
+            </div>
+            <p>This is your final reminder - make sure to complete it on time!</p>
+            <p>Best regards,<br>Task Tracker Team</p>
+            """
+            
+            resend.Emails.send({
+                "from": settings.EMAIL_FROM,
+                "to": to_email,
+                "subject": subject,
+                "html": message
+            })
+            
+            print(f"✅ Hourly reminder sent: {subject} to {to_email}")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Failed to send hourly reminder to {to_email}: {str(e)}")
+            return False

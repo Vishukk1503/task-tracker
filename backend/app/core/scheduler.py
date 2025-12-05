@@ -88,11 +88,77 @@ def check_due_dates():
         db.close()
 
 
+def check_hourly_reminders():
+    """
+    Check for tasks due in the next hour
+    Runs every hour
+    """
+    print(f"⏰ Checking hourly reminders at {datetime.now()}")
+    
+    db: Session = SessionLocal()
+    try:
+        EmailService.initialize()
+        
+        now = datetime.utcnow()
+        one_hour_later = now + timedelta(hours=1)
+        
+        # Get all incomplete tasks with due dates in the next hour
+        tasks = db.query(Task).filter(
+            Task.status != TaskStatus.COMPLETED,
+            Task.due_date.isnot(None),
+            Task.due_date >= now,
+            Task.due_date <= one_hour_later
+        ).all()
+        
+        for task in tasks:
+            # Check if we already sent 1-hour notification
+            existing = db.query(Notification).filter(
+                Notification.task_id == task.id,
+                Notification.notification_type == "due_1_hour"
+            ).first()
+            
+            if existing:
+                continue
+            
+            # Get user
+            user = db.query(User).filter(User.id == task.user_id).first()
+            if not user:
+                continue
+            
+            # Send notification
+            time_until = (task.due_date - now).total_seconds() / 60  # minutes
+            
+            success = EmailService.send_hourly_reminder(
+                to_email=user.email,
+                username=user.username,
+                task_title=task.title,
+                due_datetime=task.due_date.strftime("%I:%M %p"),
+                minutes_until_due=int(time_until)
+            )
+            
+            if success:
+                notification = Notification(
+                    task_id=task.id,
+                    user_id=task.user_id,
+                    notification_type="due_1_hour"
+                )
+                db.add(notification)
+                db.commit()
+        
+        print(f"✅ Hourly reminder check completed")
+        
+    except Exception as e:
+        print(f"❌ Error checking hourly reminders: {str(e)}")
+        db.rollback()
+    finally:
+        db.close()
+
+
 def start_scheduler():
     """Start the background scheduler"""
     scheduler = BackgroundScheduler()
     
-    # Run daily at 9 AM
+    # Run daily at 9 AM for day-based notifications
     scheduler.add_job(
         check_due_dates,
         'cron',
@@ -101,10 +167,15 @@ def start_scheduler():
         id='due_date_notifications'
     )
     
-    # For testing: also run every hour
-    # scheduler.add_job(check_due_dates, 'interval', hours=1, id='due_date_hourly')
+    # Run every hour for 1-hour reminders
+    scheduler.add_job(
+        check_hourly_reminders,
+        'interval',
+        hours=1,
+        id='hourly_reminders'
+    )
     
     scheduler.start()
-    print("📅 Notification scheduler started")
+    print("📅 Notification scheduler started (daily at 9 AM + hourly checks)")
     
     return scheduler

@@ -4,6 +4,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { tasksApi, Task, TaskCreate, TaskUpdate, TaskStatus, TaskPriority } from '@/lib/api';
 import { TaskCard } from '@/components/TaskCard';
@@ -17,10 +18,12 @@ import toast from 'react-hot-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTour } from '@/hooks/useTour';
+import Footer from '@/components/Footer';
 
 export function TaskDashboard() {
   const { user, logout } = useAuth();
   const { isDark, toggleTheme } = useTheme();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { startDashboardTour, isTourCompleted } = useTour();
 
@@ -172,7 +175,7 @@ export function TaskDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-950/20 dark:to-purple-950/20 transition-all duration-500 animate-in fade-in">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-950/20 dark:to-purple-950/20 transition-all duration-500 animate-in fade-in flex flex-col">
       {/* Header */}
       <header className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-10 shadow-lg shadow-gray-200/50 dark:shadow-gray-950/50 transition-all duration-300">
         <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
@@ -247,6 +250,13 @@ export function TaskDashboard() {
               >
                 🎯 Tour
               </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => router.push('/profile')}
+                className="dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-4 h-8 sm:h-10 hidden sm:flex"
+              >
+                Profile
+              </Button>
               <Button variant="outline" onClick={logout} className="dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-4 h-8 sm:h-10 hidden sm:flex">
                 Logout
               </Button>
@@ -256,7 +266,20 @@ export function TaskDashboard() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 flex-1">
+        {/* Verification Banner */}
+        {user && !(user as any).is_verified && (
+          <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="text-yellow-600 dark:text-yellow-400">⚠️</div>
+              <div>
+                <p className="font-medium text-yellow-900 dark:text-yellow-200">Please verify your email</p>
+                <p className="text-sm text-yellow-700 dark:text-yellow-300">Check your inbox for the verification link. Some features may be limited until verified.</p>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {/* Filters - Only show in List view */}
         {viewMode === 'list' && (
           <div className="mb-6" data-tour="search">
@@ -358,6 +381,9 @@ export function TaskDashboard() {
         task={editingTask}
         isLoading={createMutation.isPending || updateMutation.isPending}
       />
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
