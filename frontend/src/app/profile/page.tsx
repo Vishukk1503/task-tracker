@@ -18,7 +18,7 @@ import { api } from '@/lib/api';
 import Footer from '@/components/Footer';
 
 export default function ProfilePage() {
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading: authLoading } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -97,6 +97,14 @@ export default function ProfilePage() {
       setIsLoading(false);
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
 
   if (!user) {
     router.push('/login');
