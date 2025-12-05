@@ -62,13 +62,12 @@ def get_current_user(
 
 @router.get("/users")
 def get_all_users(
-    db: Session = Depends(get_db),
-    user_id: int = Depends(get_current_user_id)  # Require authentication
+    db: Session = Depends(get_db)
 ):
     """
     Get all registered users (for admin/analytics purposes)
     Returns list of all users with basic info
-    Requires authentication.
+    TEMP: No authentication for debugging.
     """
     from app.models.models import User
     users = db.query(User).all()
@@ -79,6 +78,7 @@ def get_all_users(
                 "id": user.id,
                 "username": user.username,
                 "email": user.email,
+                "is_verified": user.is_verified,
                 "created_at": user.created_at.isoformat(),
             }
             for user in users
