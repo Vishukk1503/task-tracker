@@ -151,7 +151,7 @@ def resend_verification(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    if user.is_verified:
+    if user.is_verified == 1:
         raise HTTPException(status_code=400, detail="Email already verified")
     
     # Generate new token
@@ -160,13 +160,19 @@ def resend_verification(
     db.commit()
     
     # Send verification email
-    EmailService.initialize()
-    verification_link = f"{settings.FRONTEND_URL}/verify-email?token={verification_token}"
-    EmailService.send_verification_email(
-        to_email=user.email,
-        username=user.username,
-        verification_link=verification_link
-    )
+    try:
+        EmailService.initialize()
+        verification_link = f"{settings.FRONTEND_URL}/verify-email?token={verification_token}"
+        success = EmailService.send_verification_email(
+            to_email=user.email,
+            username=user.username,
+            verification_link=verification_link
+        )
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to send verification email")
+    except Exception as e:
+        print(f"Error sending verification email: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to send verification email")
     
     return {"message": "Verification email sent successfully"}
 
