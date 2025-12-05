@@ -13,6 +13,9 @@ import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { Loader2, Moon, Sun } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function LoginPage() {
   const { login, user, isLoading: authLoading } = useAuth();
   const { isDark, toggleTheme } = useTheme();
