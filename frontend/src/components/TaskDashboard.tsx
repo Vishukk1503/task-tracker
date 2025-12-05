@@ -239,6 +239,14 @@ export function TaskDashboard() {
               >
                 <Plus className="h-4 w-4" />
               </Button>
+              <Button 
+                variant="outline" 
+                onClick={startDashboardTour}
+                className="dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-4 h-8 sm:h-10 hidden sm:flex"
+                title="Take a tour of the features"
+              >
+                🎯 Tour
+              </Button>
               <Button variant="outline" onClick={logout} className="dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-4 h-8 sm:h-10 hidden sm:flex">
                 Logout
               </Button>
