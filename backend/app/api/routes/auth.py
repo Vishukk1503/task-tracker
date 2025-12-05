@@ -55,3 +55,27 @@ def get_current_user(
     """
     user = UserRepository.get_by_id(db, user_id)
     return UserResponse.model_validate(user)
+
+
+@router.get("/users")
+def get_all_users(
+    db: Session = Depends(get_db)
+):
+    """
+    Get all registered users (for admin/analytics purposes)
+    Returns list of all users with basic info
+    """
+    from app.models.models import User
+    users = db.query(User).all()
+    return {
+        "total_users": len(users),
+        "users": [
+            {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "created_at": user.created_at.isoformat(),
+            }
+            for user in users
+        ]
+    }

@@ -3,10 +3,7 @@
  */
 import axios from 'axios';
 
-// API URL configuration
-const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-export const API_URL = process.env.NEXT_PUBLIC_API_URL 
-  || (IS_PRODUCTION ? 'https://task-tracker-production-5239.up.railway.app/api' : 'http://localhost:8000/api');
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 export const api = axios.create({
   baseURL: API_URL,
