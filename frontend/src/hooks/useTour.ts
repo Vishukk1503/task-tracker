@@ -42,12 +42,9 @@ export function useTour() {
       showButtons: ['next', 'previous', 'close'],
       steps: [
         {
-          element: 'body',
           popover: {
             title: '👋 Welcome to Task Tracker!',
-            description: 'Let\'s take a quick tour of the features. This will only take a minute.',
-            side: 'center',
-            align: 'center'
+            description: 'Let\'s take a quick tour of the features. This will only take a minute.'
           }
         },
         {
@@ -96,12 +93,9 @@ export function useTour() {
           }
         },
         {
-          element: 'body',
           popover: {
             title: '🎉 You\'re All Set!',
-            description: 'You can restart this tour anytime from the user menu. Happy task tracking!',
-            side: 'center',
-            align: 'center'
+            description: 'You can restart this tour anytime from the user menu. Happy task tracking!'
           }
         }
       ],
