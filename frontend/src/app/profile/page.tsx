@@ -64,7 +64,7 @@ export default function ProfilePage() {
   };
 
   const handleEmailUpdate = async () => {
-    if (!newEmail || newEmail === user.email) {
+    if (!newEmail || newEmail === user?.email) {
       toast.error('Please enter a different email');
       return;
     }
