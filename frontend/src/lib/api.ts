@@ -4,7 +4,9 @@
 import axios from 'axios';
 
 // Force rebuild to pick up env vars
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
+  ? 'https://task-tracker-production-5239.up.railway.app/api' 
+  : 'http://localhost:8000/api');
 
 export const api = axios.create({
   baseURL: API_URL,
