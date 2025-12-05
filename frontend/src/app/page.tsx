@@ -9,6 +9,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TaskDashboard } from '@/components/TaskDashboard';
 import { Loader2 } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function Home() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
