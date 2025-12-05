@@ -16,11 +16,13 @@ import { Plus, Loader2, Moon, Sun, LayoutGrid, Kanban, BarChart3 } from 'lucide-
 import toast from 'react-hot-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useTour } from '@/hooks/useTour';
 
 export function TaskDashboard() {
   const { user, logout } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const queryClient = useQueryClient();
+  const { startDashboardTour, isTourCompleted } = useTour();
 
   // State
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -40,6 +42,17 @@ export function TaskDashboard() {
       setViewMode(saved);
     }
   }, []);
+
+  // Start tour on first visit
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isTourCompleted('dashboard')) {
+        startDashboardTour();
+      }
+    }, 1000); // Delay to let page render
+
+    return () => clearTimeout(timer);
+  }, [isTourCompleted, startDashboardTour]);
 
   // Save view mode to localStorage
   const setView = (mode: 'list' | 'kanban' | 'analytics') => {
@@ -177,6 +190,7 @@ export function TaskDashboard() {
                 onClick={() => setView('list')}
                 className={`rounded-full hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-950/50 dark:hover:to-purple-950/50 transition-all duration-300 h-8 w-8 sm:h-10 sm:w-10 hover:scale-110 hover:shadow-lg ${viewMode === 'list' ? 'bg-blue-100 dark:bg-blue-900/30' : ''}`}
                 title="List View"
+                data-tour="view-toggle"
               >
                 <LayoutGrid className="h-4 w-4 sm:h-5 sm:w-5 text-gray-700 dark:text-gray-300" />
               </Button>
@@ -195,6 +209,7 @@ export function TaskDashboard() {
                 onClick={() => setView('analytics')}
                 className={`rounded-full hover:bg-gradient-to-br hover:from-green-50 hover:to-teal-50 dark:hover:from-green-950/50 dark:hover:to-teal-950/50 transition-all duration-300 h-8 w-8 sm:h-10 sm:w-10 hover:scale-110 hover:shadow-lg ${viewMode === 'analytics' ? 'bg-green-100 dark:bg-green-900/30' : ''}`}
                 title="Analytics View"
+                data-tour="analytics"
               >
                 <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-gray-700 dark:text-gray-300" />
               </Button>
@@ -204,6 +219,7 @@ export function TaskDashboard() {
                 onClick={toggleTheme}
                 className="rounded-full hover:bg-gradient-to-br hover:from-yellow-50 hover:to-orange-50 dark:hover:from-yellow-950/30 dark:hover:to-orange-950/30 transition-all duration-300 h-8 w-8 sm:h-10 sm:w-10 hover:scale-110 hover:shadow-lg"
                 title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                data-tour="theme-toggle"
               >
                 {isDark ? (
                   <Sun className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500" />
@@ -211,7 +227,7 @@ export function TaskDashboard() {
                   <Moon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-700" />
                 )}
               </Button>
-              <Button onClick={() => setIsFormOpen(true)} className="items-center gap-1 sm:gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 shadow-lg shadow-blue-500/30 dark:shadow-blue-400/20 hover:shadow-xl hover:shadow-blue-500/50 dark:hover:shadow-blue-400/30 transition-all duration-300 hover:scale-105 text-xs sm:text-sm px-2 sm:px-4 h-8 sm:h-10 hidden xs:flex">
+              <Button onClick={() => setIsFormOpen(true)} className="items-center gap-1 sm:gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 shadow-lg shadow-blue-500/30 dark:shadow-blue-400/20 hover:shadow-xl hover:shadow-blue-500/50 dark:hover:shadow-blue-400/30 transition-all duration-300 hover:scale-105 text-xs sm:text-sm px-2 sm:px-4 h-8 sm:h-10 hidden xs:flex" data-tour="create-task">
                 <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline">New Task</span>
                 <span className="sm:hidden">New</span>
@@ -235,7 +251,7 @@ export function TaskDashboard() {
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
         {/* Filters - Only show in List view */}
         {viewMode === 'list' && (
-          <div className="mb-6">
+          <div className="mb-6" data-tour="search">
             <FilterBar
               search={search}
               onSearchChange={setSearch}
