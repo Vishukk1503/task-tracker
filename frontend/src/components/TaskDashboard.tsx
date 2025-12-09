@@ -21,7 +21,7 @@ import { useTour } from '@/hooks/useTour';
 import Footer from '@/components/Footer';
 
 export function TaskDashboard() {
-  const { user, logout } = useAuth();
+  const { user, logout, refreshUser } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -44,6 +44,11 @@ export function TaskDashboard() {
     if (saved === 'list' || saved === 'kanban' || saved === 'analytics') {
       setViewMode(saved);
     }
+  }, []);
+
+  // Refresh user data on mount
+  useEffect(() => {
+    refreshUser();
   }, []);
 
   // Start tour on first visit

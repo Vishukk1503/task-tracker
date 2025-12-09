@@ -159,17 +159,16 @@ export function TaskForm({ open, onOpenChange, onSubmit, task, isLoading }: Task
               <label htmlFor="due_date" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Due Date & Time
               </label>
-              <Input
-                id="due_date"
-                type="datetime-local"
-                value={formData.due_date}
-                onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
-                className="bg-white dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all w-full min-w-0"
-                step="60"
-              />
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Timezone: {Intl.DateTimeFormat().resolvedOptions().timeZone}
-              </p>
+              <div className="relative">
+                <Input
+                  id="due_date"
+                  type="datetime-local"
+                  value={formData.due_date}
+                  onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
+                  className="bg-white dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all"
+                  lang="en-GB"
+                />
+              </div>
             </div>
           </div>
 

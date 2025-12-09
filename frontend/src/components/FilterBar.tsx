@@ -44,6 +44,8 @@ export function FilterBar({
       <div className="relative group">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 h-4 w-4 transition-colors group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400" />
         <Input
+          id="search-tasks"
+          name="search"
           type="text"
           placeholder="Search tasks..."
           value={search}
@@ -54,21 +56,21 @@ export function FilterBar({
 
       {/* Filters */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-        <Select value={status} onChange={(e) => onStatusChange(e.target.value as TaskStatus | '')} className="bg-white dark:bg-gray-800/50 backdrop-blur border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all">
+        <Select id="filter-status" name="status" value={status} onChange={(e) => onStatusChange(e.target.value as TaskStatus | '')} className="bg-white dark:bg-gray-800/50 backdrop-blur border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all">
           <option value="">All Status</option>
           <option value={TaskStatus.NOT_STARTED}>Not Started</option>
           <option value={TaskStatus.IN_PROGRESS}>In Progress</option>
           <option value={TaskStatus.COMPLETED}>Completed</option>
         </Select>
 
-        <Select value={priority} onChange={(e) => onPriorityChange(e.target.value as TaskPriority | '')} className="bg-white dark:bg-gray-800/50 backdrop-blur border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all">
+        <Select id="filter-priority" name="priority" value={priority} onChange={(e) => onPriorityChange(e.target.value as TaskPriority | '')} className="bg-white dark:bg-gray-800/50 backdrop-blur border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all">
           <option value="">All Priority</option>
           <option value={TaskPriority.LOW}>Low</option>
           <option value={TaskPriority.MEDIUM}>Medium</option>
           <option value={TaskPriority.HIGH}>High</option>
         </Select>
 
-        <Select value={sortBy} onChange={(e) => onSortByChange(e.target.value)} className="bg-white dark:bg-gray-800/50 backdrop-blur border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all">
+        <Select id="sort-by" name="sortBy" value={sortBy} onChange={(e) => onSortByChange(e.target.value)} className="bg-white dark:bg-gray-800/50 backdrop-blur border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all">
           <option value="created_at">Created Date</option>
           <option value="updated_at">Updated Date</option>
           <option value="due_date">Due Date</option>
@@ -77,7 +79,7 @@ export function FilterBar({
           <option value="title">Title</option>
         </Select>
 
-        <Select value={sortOrder} onChange={(e) => onSortOrderChange(e.target.value as 'asc' | 'desc')} className="bg-white dark:bg-gray-800/50 backdrop-blur border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all">
+        <Select id="sort-order" name="sortOrder" value={sortOrder} onChange={(e) => onSortOrderChange(e.target.value as 'asc' | 'desc')} className="bg-white dark:bg-gray-800/50 backdrop-blur border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all">
           <option value="desc">Descending</option>
           <option value="asc">Ascending</option>
         </Select>

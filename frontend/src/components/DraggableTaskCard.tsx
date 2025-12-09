@@ -115,6 +115,8 @@ export function DraggableTaskCard({ task, onEdit, onDelete, isDragging = false }
           {/* Title - Inline Editable */}
           {isEditing ? (
             <input
+              id={`edit-task-title-${task.id}`}
+              name="taskTitle"
               type="text"
               value={editedTitle}
               onChange={(e) => setEditedTitle(e.target.value)}

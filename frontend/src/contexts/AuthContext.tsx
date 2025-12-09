@@ -102,9 +102,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const refreshUser = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    
     try {
       const response = await authApi.getCurrentUser();
       const updatedUser = response.data;
+      console.log('Refreshed user data:', updatedUser);
       setUser(updatedUser);
       localStorage.setItem('user', JSON.stringify(updatedUser));
     } catch (error) {
