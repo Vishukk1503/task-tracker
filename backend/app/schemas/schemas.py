@@ -83,6 +83,7 @@ class UserCreate(UserBase):
 class UserResponse(UserBase):
     """Schema for user response"""
     id: int
+    is_verified: int
     created_at: datetime
     
     class Config:

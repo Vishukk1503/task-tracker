@@ -273,7 +273,7 @@ export function TaskDashboard() {
       {/* Main Content */}
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 flex-1">
         {/* Verification Banner */}
-        {user && !(user as any).is_verified && (
+        {user && (user as any).is_verified === 0 && (
           <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="text-yellow-600 dark:text-yellow-400">⚠️</div>
