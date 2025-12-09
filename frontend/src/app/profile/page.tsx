@@ -18,7 +18,7 @@ import { api } from '@/lib/api';
 import Footer from '@/components/Footer';
 
 export default function ProfilePage() {
-  const { user, logout, isLoading: authLoading } = useAuth();
+  const { user, logout, isLoading: authLoading, refreshUser } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -96,6 +96,9 @@ export default function ProfilePage() {
       await api.post('/auth/resend-verification');
       toast.success('Verification email sent! Check your inbox.');
       startResendTimer();
+      
+      // Refresh user data to update UI
+      await refreshUser();
     } catch (error: any) {
       toast.error(error.response?.data?.detail || 'Failed to send verification email');
     } finally {
