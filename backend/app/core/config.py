@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     
     # CORS
     FRONTEND_URL: str = "http://localhost:3000"
-    ALLOWED_ORIGINS: str = "http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,http://127.0.0.1:3001"
+    ALLOWED_ORIGINS: str = "http://localhost:3000,https://task-tracker-66mv.vercel.app,https://tasktrackerz.xyz,https://www.tasktrackerz.xyz"
     
     # Environment
     ENVIRONMENT: str = "development"  # development, production, staging
